@@ -31,13 +31,16 @@ namespace OpenCvDisparityMapGenerator
             var disparity_map_generator_types = Enum.GetValues(typeof(Native.OpenCvDisparityMapGeneratorType));
             DisparityMapGeneratorType.ItemsSource = disparity_map_generator_types;
             DisparityMapGeneratorType.SelectedIndex = 0;
+            disparity_map_generator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).Build();
             if (String.IsNullOrEmpty(ApplicationSettings.Default.LeftImage) == false)
             {
-                LoadImage(ApplicationSettings.Default.LeftImage, LeftImage, LeftImagePreview);
+                LoadImage(ref left_image_, ApplicationSettings.Default.LeftImage, LeftImage, LeftImagePreview);
+                disparity_map_generator_.SetLeftImage(left_image_);
             }
             if (String.IsNullOrEmpty(ApplicationSettings.Default.RightImage) == false)
             {
-                LoadImage(ApplicationSettings.Default.RightImage, RightImage, RightImagePreview);
+                LoadImage(ref right_image_, ApplicationSettings.Default.RightImage, RightImage, RightImagePreview);
+                disparity_map_generator_.SetRightImage(right_image_);
             }
         }
 
@@ -47,6 +50,7 @@ namespace OpenCvDisparityMapGenerator
             {
                 disparity_map_generator_.SetLeftImage(left_image_);
                 ApplicationSettings.Default.LeftImage = left_image_;
+                ApplicationSettings.Default.Save();
             }
         }
 
@@ -56,14 +60,16 @@ namespace OpenCvDisparityMapGenerator
             {
                 disparity_map_generator_.SetRightImage(right_image_);
                 ApplicationSettings.Default.RightImage = right_image_;
+                ApplicationSettings.Default.Save();
             }
         }
 
-        private void LoadImage(string new_image, TextBox image, Image image_container)
+        private void LoadImage(ref string existing_image, string new_image, TextBox image, Image image_container)
         {
             var image_source = new BitmapImage(new Uri(new_image));
             image_container.Source = image_source;
             image.Text = new_image;
+            existing_image = new_image;
         }
 
         private bool LoadImage(ref string existing_image, TextBox image, Image image_container)
@@ -76,8 +82,7 @@ namespace OpenCvDisparityMapGenerator
                 {
                     try
                     {
-                        LoadImage(new_image, image, image_container);
-                        existing_image = new_image;
+                        LoadImage(ref existing_image, new_image, image, image_container);
                         return true;
                     }
                     catch (Exception exception)
@@ -93,7 +98,13 @@ namespace OpenCvDisparityMapGenerator
         {
             if (disparity_map_generator_ != null)
             {
-                disparity_map_generator_.ComputeDisparityMap();
+                try
+                {
+                    disparity_map_generator_.ComputeDisparityMap();
+                }
+                catch (Exception exception)
+                {
+                }
             }
         }
     }

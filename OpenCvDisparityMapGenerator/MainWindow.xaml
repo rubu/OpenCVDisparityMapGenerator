@@ -36,7 +36,7 @@
 			<Image Grid.Row="3" x:Name="LeftImagePreview"></Image>
 			<Label Grid.Column="1">Right Image:</Label>
 			<TextBox Grid.Row="1" Grid.Column="1" x:Name="RightImage" IsReadOnly="True"></TextBox>
-			<Button Grid.Row="2" Grid.Column="1" Click="OnSelectRightImageClicked" >Select Left Image</Button>
+			<Button Grid.Row="2" Grid.Column="1" Click="OnSelectRightImageClicked" >Select Right Image</Button>
 			<Image Grid.Row="3" Grid.Column="1" x:Name="RightImagePreview"></Image>
 		</Grid>
 		<Button Grid.Row="2" HorizontalAlignment="Center" Click="OnComputeDisparityMapClicked">Compute Disparity Map</Button>

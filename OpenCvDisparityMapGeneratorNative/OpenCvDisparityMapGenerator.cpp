@@ -74,7 +74,14 @@ OpenCvDisparityMapGenerator::~OpenCvDisparityMapGenerator()
 
 void OpenCvDisparityMapGenerator::ComputeDisparityMap()
 {
-	impl_->ComputeDisparityMap();
+	try
+	{
+		impl_->ComputeDisparityMap();
+	}
+	catch (const cv::Exception& exception)
+	{
+		throw gcnew System::Exception(gcnew System::String(exception.what()));
+	}
 }
 
 void OpenCvDisparityMapGenerator::SetLeftImage(System::String^ left_image)
