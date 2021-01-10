@@ -34,7 +34,7 @@ namespace OpenCvDisparityMapGenerator
         {
             try
             {
-#if true
+#if false
                 // Just a dummy test if we can load the native library
                 {
                     var current_directory = Directory.GetCurrentDirectory();

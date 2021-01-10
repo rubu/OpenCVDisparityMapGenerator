@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenCvDisparityMapGenerator"
         mc:Ignorable="d"
-        Title="OpenCV Disparity Map Generator" Height="450" Width="800">
+        Title="OpenCV Disparity Map Generator" Height="Auto" Width="800">
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition></RowDefinition>
 			<RowDefinition></RowDefinition>
 		</Grid.RowDefinitions>
 		<StackPanel>
@@ -40,5 +41,7 @@
 			<Image Grid.Row="3" Grid.Column="1" x:Name="RightImagePreview"></Image>
 		</Grid>
 		<Button Grid.Row="2" HorizontalAlignment="Center" Click="OnComputeDisparityMapClicked">Compute Disparity Map</Button>
+		<Image Grid.Row="3" HorizontalAlignment="Center" x:Name="DisparityMap"></Image>
+		<Image Grid.Row="4" HorizontalAlignment="Center" x:Name="ConfidenceMap"></Image>
     </Grid>
 </Window>
