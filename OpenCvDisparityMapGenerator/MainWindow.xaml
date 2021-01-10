@@ -1,0 +1,44 @@
+﻿<Window x:Class="OpenCvDisparityMapGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OpenCvDisparityMapGenerator"
+        mc:Ignorable="d"
+        Title="OpenCV Disparity Map Generator" Height="450" Width="800">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+		<StackPanel>
+			<Label Margin="8,8,8,0">Disparity Map Generator Type:</Label>
+			<ComboBox Margin="8,0,8,0" x:Name="DisparityMapGeneratorType">
+			</ComboBox>
+			<Button Margin="8,8,8,8" HorizontalAlignment="Left">Configure Disparity Map Generator</Button>
+		</StackPanel>
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition></ColumnDefinition>
+				<ColumnDefinition></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="160"></RowDefinition>
+			</Grid.RowDefinitions>
+			<Label>Left Image:</Label>
+			<TextBox Grid.Row="1" x:Name="LeftImage" IsReadOnly="true"></TextBox>
+			<Button Grid.Row="2" Click="OnSelectLeftImageClicked">Select Left Image</Button>
+			<Image Grid.Row="3" x:Name="LeftImagePreview"></Image>
+			<Label Grid.Column="1">Right Image:</Label>
+			<TextBox Grid.Row="1" Grid.Column="1" x:Name="RightImage" IsReadOnly="True"></TextBox>
+			<Button Grid.Row="2" Grid.Column="1" Click="OnSelectRightImageClicked" >Select Left Image</Button>
+			<Image Grid.Row="3" Grid.Column="1" x:Name="RightImagePreview"></Image>
+		</Grid>
+		<Button Grid.Row="2" HorizontalAlignment="Center" Click="OnComputeDisparityMapClicked">Compute Disparity Map</Button>
+    </Grid>
+</Window>
