@@ -109,17 +109,21 @@ namespace OpenCvDisparityMapGenerator
                             SetNativeConfiguration();
                         }
                     }
-                    DisparityMap.Source = null;
+                    // Yes yes, we block the gui here, boo hoo
                     disparity_map_generator_.ComputeDisparityMap();
                     var source = new BitmapImage();
+                    MemoryStream ms = new MemoryStream();
+                    byte[] byteArray = File.ReadAllBytes(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "result.png"));
+                    ms.Write(byteArray, 0, byteArray.Length);
+                    ms.Position = 0;
                     source.BeginInit();
-                    source.CacheOption = BitmapCacheOption.None;
-                    source.UriSource = new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "result.png"));
+                    source.StreamSource = ms;
                     source.EndInit();
                     DisparityMap.Source = source;
                 }
                 catch (Exception exception)
                 {
+                    MessageBox.Show(exception.Message);
                 }
             }
         }
