@@ -24,26 +24,26 @@
         <!-- MinDisparity-->
         <Label VerticalAlignment="Center">Mininum Disparity</Label>
         <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=MinDisparity, Path=Value, StringFormat={}{0:#}}"/>
-        <Slider x:Name="MinDisparity" Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=MinDisparity}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="MinDisparity" Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=MinDisparity}" Minimum="0" Maximum="1000" ValueChanged="AnyValueChanged"></Slider>
         <!-- NumDisparities -->
         <Label Grid.Row="1" VerticalAlignment="Center">Number of Disparities</Label>
         <TextBlock Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Text="{Binding ElementName=NumDisparities, Path=Value, StringFormat={}{0:#}}"/>
-        <Slider x:Name="NumDisparities" Grid.Row="1"  Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=NumDisparities}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="NumDisparities" Grid.Row="1"  Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=NumDisparities}" Minimum="0" Maximum="1000" TickFrequency="16" IsSnapToTickEnabled="True" ValueChanged="AnyValueChanged"></Slider>
         <!-- BlockSize -->
         <Label Grid.Row="2" VerticalAlignment="Center">Block Size</Label>
         <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=BlockSize, Path=Value, StringFormat={}{0:#}}"/>
-        <Slider x:Name="BlockSize" Grid.Row="2"  Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=BlockSize}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="BlockSize" Grid.Row="2"  Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=BlockSize}" Minimum="5" Maximum="255" TickFrequency="2" IsSnapToTickEnabled="True" ValueChanged="AnyValueChanged"></Slider>
         <!-- SpeckleWindowSize -->
         <Label Grid.Row="3" VerticalAlignment="Center">Speckle Window Size</Label>
         <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=SpeckleWindowSize, Path=Value, StringFormat={}{0:#}}"/>
-        <Slider x:Name="SpeckleWindowSize" Grid.Row="3"  Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=SpeckleWindowSize}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="SpeckleWindowSize" Grid.Row="3"  Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=SpeckleWindowSize}" Minimum="0" Maximum="1000" ValueChanged="AnyValueChanged"></Slider>
         <!-- SpeckleRange -->
         <Label Grid.Row="4" VerticalAlignment="Center">Speckle Range</Label>
         <TextBlock Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=SpeckleRange, Path=Value, StringFormat={}{0:#}}"/>
-        <Slider x:Name="SpeckleRange" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=SpeckleRange}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="SpeckleRange" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Value="{Binding Path=SpeckleRange}" Minimum="0" Maximum="1000" ValueChanged="AnyValueChanged"></Slider>
         <!-- Disp12MaxDiff-->
         <Label Grid.Row="5" VerticalAlignment="Center">Maximum allowed difference</Label>
         <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=Disp12MaxDiff, Path=Value, StringFormat={}{0:#}}"/>
-        <Slider x:Name="Disp12MaxDiff" Grid.Row="5" Grid.Column="2"  VerticalAlignment="Center" Value="{Binding Path=Disp12MaxDiff}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="Disp12MaxDiff" Grid.Row="5" Grid.Column="2"  VerticalAlignment="Center" Value="{Binding Path=Disp12MaxDiff}" Minimum="0" Maximum="1000" ValueChanged="AnyValueChanged"></Slider>
     </Grid>
 </UserControl>

@@ -104,6 +104,7 @@
     <Compile Include="Configuration\StereoMatcherConfiguration.xaml.cs">
       <DependentUpon>StereoMatcherConfiguration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

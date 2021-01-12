@@ -33,8 +33,7 @@ namespace OpenCvDisparityMapGenerator
             DisparityMapGeneratorType.ItemsSource = disparity_map_generator_types;
             DisparityMapGeneratorType.SelectedIndex = 0;
             disparity_map_generator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).Build();
-            stereo_matcher_configuration_ = disparity_map_generator_.GetConfiguration();
-            StereoMatcherConfiguration.DataContext = stereo_matcher_configuration_;
+            LoadNativeConfiguration();
             if (String.IsNullOrEmpty(ApplicationSettings.Default.LeftImage) == false)
             {
                 LoadImage(ref left_image_, ApplicationSettings.Default.LeftImage, LeftImage, LeftImagePreview);
@@ -90,7 +89,7 @@ namespace OpenCvDisparityMapGenerator
                     }
                     catch (Exception exception)
                     {
-
+                        MessageBox.Show(exception.Message);
                     }
                 }
             }
@@ -103,6 +102,14 @@ namespace OpenCvDisparityMapGenerator
             {
                 try
                 {
+                    if (StereoMatcherConfiguration.Dirty)
+                    {
+                        if (MessageBox.Show("Configuration has been changed since the last time it was loaded, do you want to apply the new settings?", "Configuration Changed", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        {
+                            SetNativeConfiguration();
+                        }
+                    }
+                    DisparityMap.Source = null;
                     disparity_map_generator_.ComputeDisparityMap();
                     var source = new BitmapImage();
                     source.BeginInit();
@@ -122,9 +129,31 @@ namespace OpenCvDisparityMapGenerator
 
         }
 
+        private void LoadNativeConfiguration()
+        {
+            stereo_matcher_configuration_ = disparity_map_generator_.GetConfiguration();
+            StereoMatcherConfiguration.NativeConfiguration = stereo_matcher_configuration_;
+            StereoMatcherConfiguration.GuiConfiguration = stereo_matcher_configuration_.Clone();
+            StereoMatcherConfiguration.DataContext = StereoMatcherConfiguration.GuiConfiguration;
+            StereoMatcherConfiguration.Dirty = false;
+        }
+
+        private void SetNativeConfiguration()
+        {
+            try
+            {
+                disparity_map_generator_.SetConfiguration(StereoMatcherConfiguration.GuiConfiguration);
+                LoadNativeConfiguration();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+
         private void OnApplySettingsClicked(object sender, RoutedEventArgs e)
         {
-            disparity_map_generator_.SetConfiguration(stereo_matcher_configuration_);
+            SetNativeConfiguration();
         }
     }
 }
