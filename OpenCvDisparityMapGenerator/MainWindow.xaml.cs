@@ -113,7 +113,7 @@ namespace OpenCvDisparityMapGenerator
                     disparity_map_generator_.ComputeDisparityMap();
                     var source = new BitmapImage();
                     source.BeginInit();
-                    source.CacheOption = BitmapCacheOption.OnLoad;
+                    source.CacheOption = BitmapCacheOption.None;
                     source.UriSource = new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "result.png"));
                     source.EndInit();
                     DisparityMap.Source = source;
