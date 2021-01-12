@@ -17,8 +17,10 @@ public:
 
 	void ComputeDisparityMap()
 	{
-		cv::Mat result;
+		cv::Mat result, result_normalized;
 		stereo_matcher_->compute(left_image_data_, right_image_data_, result);
+		cv::normalize(result, result_normalized, 0, 255, cv::NORM_MINMAX, CV_8U);
+		cv::imwrite("result.png", result_normalized);
 	}
 
 	void SetLeftImage(const std::string &left_image)
@@ -36,7 +38,8 @@ private:
 	{
 		if (new_image != existing_image)
 		{
-			image_data = cv::imread(new_image);
+			auto image_data_original = cv::imread(new_image);
+			cv::cvtColor(image_data_original, image_data, cv::COLOR_BGR2GRAY);
 			existing_image = new_image;
 		}
 	}
@@ -78,7 +81,7 @@ void OpenCvDisparityMapGenerator::ComputeDisparityMap()
 	{
 		impl_->ComputeDisparityMap();
 	}
-	catch (const cv::Exception& exception)
+	catch (const cv::Exception &exception)
 	{
 		throw gcnew System::Exception(gcnew System::String(exception.what()));
 	}

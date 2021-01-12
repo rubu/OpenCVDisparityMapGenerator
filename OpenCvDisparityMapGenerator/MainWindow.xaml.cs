@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.IO;
 
 namespace OpenCvDisparityMapGenerator
 {
@@ -101,11 +101,22 @@ namespace OpenCvDisparityMapGenerator
                 try
                 {
                     disparity_map_generator_.ComputeDisparityMap();
+                    var source = new BitmapImage();
+                    source.BeginInit();
+                    source.CacheOption = BitmapCacheOption.OnLoad;
+                    source.UriSource = new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "result.png"));
+                    source.EndInit();
+                    DisparityMap.Source = source;
                 }
                 catch (Exception exception)
                 {
                 }
             }
+        }
+
+        private void SelectedAlgorithmChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -16,9 +16,8 @@
 		</Grid.RowDefinitions>
 		<StackPanel>
 			<Label Margin="8,8,8,0">Disparity Map Generator Type:</Label>
-			<ComboBox Margin="8,0,8,0" x:Name="DisparityMapGeneratorType">
+			<ComboBox Margin="8,0,8,0" x:Name="DisparityMapGeneratorType" SelectionChanged="SelectedAlgorithmChanged">
 			</ComboBox>
-			<Button Margin="8,8,8,8" HorizontalAlignment="Left">Configure Disparity Map Generator</Button>
 		</StackPanel>
 		<Grid Grid.Row="1">
 			<Grid.ColumnDefinitions>
