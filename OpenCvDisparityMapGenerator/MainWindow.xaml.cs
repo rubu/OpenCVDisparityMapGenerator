@@ -24,6 +24,7 @@ namespace OpenCvDisparityMapGenerator
         private String left_image_;
         private String right_image_;
         private Native.OpenCvDisparityMapGenerator disparity_map_generator_;
+        private Native.StereoMatcherConfiguration stereo_matcher_configuration_;
 
         public MainWindow()
         {
@@ -32,6 +33,8 @@ namespace OpenCvDisparityMapGenerator
             DisparityMapGeneratorType.ItemsSource = disparity_map_generator_types;
             DisparityMapGeneratorType.SelectedIndex = 0;
             disparity_map_generator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).Build();
+            stereo_matcher_configuration_ = disparity_map_generator_.GetConfiguration();
+            StereoMatcherConfiguration.DataContext = stereo_matcher_configuration_;
             if (String.IsNullOrEmpty(ApplicationSettings.Default.LeftImage) == false)
             {
                 LoadImage(ref left_image_, ApplicationSettings.Default.LeftImage, LeftImage, LeftImagePreview);
@@ -117,6 +120,11 @@ namespace OpenCvDisparityMapGenerator
         private void SelectedAlgorithmChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void OnApplySettingsClicked(object sender, RoutedEventArgs e)
+        {
+            disparity_map_generator_.SetConfiguration(stereo_matcher_configuration_);
         }
     }
 }

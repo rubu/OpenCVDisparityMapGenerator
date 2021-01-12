@@ -1,26 +1,82 @@
 #include "OpenCvDisparityMapGenerator.h"
+#include "StereoBmConfiguration.h"
+#include "StereoSgbmConfiguration.h"
 
 #include <msclr\marshal_cppstd.h>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 #include <memory>
+#include <sstream>
 
 namespace Native
 {
 
 class OpenCvDisparityMapGeneratorImpl
 {
+	struct DisparityMap
+	{
+		cv::Mat result_;
+		cv::Mat result_normalized_;
+	};
+
 public:
-	OpenCvDisparityMapGeneratorImpl(cv::Ptr<cv::StereoMatcher> stereo_matcher) : stereo_matcher_(std::move(stereo_matcher))
+	OpenCvDisparityMapGeneratorImpl(OpenCvDisparityMapGeneratorType type, cv::Ptr<cv::StereoMatcher> stereo_matcher) : type_(type),
+		stereo_matcher_(std::move(stereo_matcher))
 	{
 	}
 
 	void ComputeDisparityMap()
 	{
-		cv::Mat result, result_normalized;
-		stereo_matcher_->compute(left_image_data_, right_image_data_, result);
-		cv::normalize(result, result_normalized, 0, 255, cv::NORM_MINMAX, CV_8U);
-		cv::imwrite("result.png", result_normalized);
+		DisparityMap disparity_map;
+		stereo_matcher_->compute(left_image_data_, right_image_data_, disparity_map.result_);
+		cv::normalize(disparity_map.result_, disparity_map.result_normalized_, 0, 255, cv::NORM_MINMAX, CV_8U);
+		cv::imwrite("result.png", disparity_map.result_normalized_);
+	}
+
+	StereoMatcherConfiguration ^GetConfiguration()
+	{
+		StereoMatcherConfiguration^ configuration = nullptr;
+		switch (type_)
+		{
+		case OpenCvDisparityMapGeneratorType::StereoBM:
+			{
+				configuration = gcnew StereoBmConfiguration;
+				configuration->Type = OpenCvDisparityMapGeneratorType::StereoBM;
+			}
+			break;
+		case OpenCvDisparityMapGeneratorType::StereoSGBM:
+			{
+				configuration = gcnew StereoSgbmConfiguration;
+				configuration->Type = OpenCvDisparityMapGeneratorType::StereoSGBM;
+			}
+			break;
+		}
+		if (configuration != nullptr)
+		{
+			configuration->MinDisparity = stereo_matcher_->getMinDisparity();
+			configuration->NumDisparities = stereo_matcher_->getNumDisparities();
+			configuration->BlockSize = stereo_matcher_->getBlockSize();
+			configuration->SpeckleRange = stereo_matcher_->getSpeckleRange();
+			configuration->SpeckleWindowSize = stereo_matcher_->getSpeckleWindowSize();
+			configuration->Disp12MaxDiff = stereo_matcher_->getSpeckleWindowSize();
+		}
+		return configuration;
+	}
+
+	void SetConfiguration(StereoMatcherConfiguration ^configuration)
+	{
+		if (configuration->Type != type_)
+		{
+			std::stringstream error_stream;
+			error_stream << "configuration type " << static_cast<uint32_t>(configuration->Type) << " does not match implementation type " << static_cast<uint32_t>(type_);
+			throw std::exception(error_stream.str().c_str());
+		}
+		stereo_matcher_->setMinDisparity(configuration->MinDisparity);
+		stereo_matcher_->setNumDisparities(configuration->NumDisparities);
+		stereo_matcher_->setBlockSize(configuration->BlockSize);
+		stereo_matcher_->setSpeckleRange(configuration->SpeckleRange);
+		stereo_matcher_->setSpeckleWindowSize(configuration->SpeckleWindowSize);
+		stereo_matcher_->setDisp12MaxDiff(configuration->Disp12MaxDiff);
 	}
 
 	void SetLeftImage(const std::string &left_image)
@@ -49,20 +105,13 @@ private:
 	cv::Mat left_image_data_;
 	std::string right_image_;
 	cv::Mat right_image_data_;
-	cv::Ptr<cv::StereoMatcher> stereo_matcher_;
+	const OpenCvDisparityMapGeneratorType type_;
+	const cv::Ptr<cv::StereoMatcher> stereo_matcher_;
 };
 
 OpenCvDisparityMapGenerator::OpenCvDisparityMapGenerator(OpenCvDisparityMapGeneratorType type)
 {
-	switch (type)
-	{
-	case OpenCvDisparityMapGeneratorType::StereoBM:
-		impl_ = new OpenCvDisparityMapGeneratorImpl(cv::StereoBM::create());
-		break;
-	case OpenCvDisparityMapGeneratorType::StereoSGBM:
-		impl_ = new OpenCvDisparityMapGeneratorImpl(cv::StereoSGBM::create());
-		break;
-	}
+	CreateImpl(type);
 }
 
 OpenCvDisparityMapGenerator::!OpenCvDisparityMapGenerator()
@@ -85,6 +134,36 @@ void OpenCvDisparityMapGenerator::ComputeDisparityMap()
 	{
 		throw gcnew System::Exception(gcnew System::String(exception.what()));
 	}
+}
+
+void OpenCvDisparityMapGenerator::CreateImpl(OpenCvDisparityMapGeneratorType type)
+{
+	switch (type)
+	{
+	case OpenCvDisparityMapGeneratorType::StereoBM:
+		impl_ = new OpenCvDisparityMapGeneratorImpl(OpenCvDisparityMapGeneratorType::StereoBM, cv::StereoBM::create());
+		break;
+	case OpenCvDisparityMapGeneratorType::StereoSGBM:
+		impl_ = new OpenCvDisparityMapGeneratorImpl(OpenCvDisparityMapGeneratorType::StereoSGBM, cv::StereoSGBM::create());
+		break;
+	default:
+		throw gcnew System::Exception(System::String::Format("unsupported OpenCV disparity map generator type {0}", gcnew System::UInt32(static_cast<unsigned int>(type))));
+	}
+	type_ = type;
+}
+
+StereoMatcherConfiguration ^OpenCvDisparityMapGenerator::GetConfiguration()
+{
+	return impl_->GetConfiguration();
+}
+
+void OpenCvDisparityMapGenerator::SetConfiguration(StereoMatcherConfiguration ^configuration)
+{
+	if (configuration->Type != type_)
+	{
+		CreateImpl(configuration->Type);
+	}
+	impl_->SetConfiguration(configuration);
 }
 
 void OpenCvDisparityMapGenerator::SetLeftImage(System::String^ left_image)

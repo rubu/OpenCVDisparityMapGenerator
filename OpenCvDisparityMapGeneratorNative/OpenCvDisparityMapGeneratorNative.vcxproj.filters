@@ -24,6 +24,15 @@
     <ClInclude Include="OpenCvDisparityMapGeneratorType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StereoBmConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StereoSgbmConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StereoMatcherConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCvDisparityMapGenerator.cpp">

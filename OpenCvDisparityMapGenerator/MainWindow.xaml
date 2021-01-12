@@ -4,31 +4,40 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenCvDisparityMapGenerator"
+        xmlns:configuration="clr-namespace:OpenCvDisparityMapGenerator.Configuration"
         mc:Ignorable="d"
         Title="OpenCV Disparity Map Generator" Height="Auto" Width="800">
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition></RowDefinition>
-			<RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
 		<StackPanel>
 			<Label Margin="8,8,8,0">Disparity Map Generator Type:</Label>
 			<ComboBox Margin="8,0,8,0" x:Name="DisparityMapGeneratorType" SelectionChanged="SelectedAlgorithmChanged">
 			</ComboBox>
 		</StackPanel>
-		<Grid Grid.Row="1">
+        <configuration:StereoMatcherConfiguration Grid.Row="1" x:Name="StereoMatcherConfiguration"></configuration:StereoMatcherConfiguration>
+        <StackPanel Grid.Row="2">
+            <Button HorizontalAlignment="Left" Click="OnApplySettingsClicked">Apply Configuration</Button>
+        </StackPanel>
+        <Grid Grid.Row="3">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition></ColumnDefinition>
 				<ColumnDefinition></ColumnDefinition>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
-				<RowDefinition Height="160"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			<Label>Left Image:</Label>
 			<TextBox Grid.Row="1" x:Name="LeftImage" IsReadOnly="true"></TextBox>
@@ -39,8 +48,8 @@
 			<Button Grid.Row="2" Grid.Column="1" Click="OnSelectRightImageClicked" >Select Right Image</Button>
 			<Image Grid.Row="3" Grid.Column="1" x:Name="RightImagePreview"></Image>
 		</Grid>
-		<Button Grid.Row="2" HorizontalAlignment="Center" Click="OnComputeDisparityMapClicked">Compute Disparity Map</Button>
-		<Image Grid.Row="3" HorizontalAlignment="Center" x:Name="DisparityMap"></Image>
-		<Image Grid.Row="4" HorizontalAlignment="Center" x:Name="ConfidenceMap"></Image>
+        <Button Grid.Row="4" HorizontalAlignment="Center" Click="OnComputeDisparityMapClicked">Compute Disparity Map</Button>
+		<Image Grid.Row="5" HorizontalAlignment="Center" x:Name="DisparityMap"></Image>
+		<Image Grid.Row="6" HorizontalAlignment="Center" x:Name="ConfidenceMap"></Image>
     </Grid>
 </Window>

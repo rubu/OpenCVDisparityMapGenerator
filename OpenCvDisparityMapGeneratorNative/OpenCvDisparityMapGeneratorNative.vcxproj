@@ -192,6 +192,9 @@ copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgproc451d.dll $(O
     <ClInclude Include="OpenCvDisparityMapGeneratorType.h" />
     <ClInclude Include="OpenCvDisparityMapGeneratorBuilder.h" />
     <ClInclude Include="OpenCvDisparityMapGenerator.h" />
+    <ClInclude Include="StereoBmConfiguration.h" />
+    <ClInclude Include="StereoMatcherConfiguration.h" />
+    <ClInclude Include="StereoSgbmConfiguration.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCvDisparityMapGenerator.cpp">

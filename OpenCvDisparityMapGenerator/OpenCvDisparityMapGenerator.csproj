@@ -81,6 +81,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Configuration\StereoMatcherConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -96,6 +100,9 @@
     </Compile>
     <Compile Include="Configuration\StereoBMConfiguration.xaml.cs">
       <DependentUpon>StereoBMConfiguration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\StereoMatcherConfiguration.xaml.cs">
+      <DependentUpon>StereoMatcherConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
