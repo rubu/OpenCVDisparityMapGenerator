@@ -50,12 +50,12 @@ namespace OpenCvDisparityMapGenerator {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Algorithm {
+        public string DisparityMapGeneratorType {
             get {
-                return ((string)(this["Algorithm"]));
+                return ((string)(this["DisparityMapGeneratorType"]));
             }
             set {
-                this["Algorithm"] = value;
+                this["DisparityMapGeneratorType"] = value;
             }
         }
     }

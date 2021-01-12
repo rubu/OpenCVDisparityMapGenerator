@@ -36,5 +36,32 @@ namespace OpenCvDisparityMapGenerator
             }
             return clone;
         }
+
+        public static bool IsEqual(this Native.StereoMatcherConfiguration configuration, Native.StereoMatcherConfiguration other)
+        {
+            if (configuration.Type != other.Type)
+            {
+                return false;
+            }
+            if (configuration.BlockSize != other.BlockSize ||
+                configuration.Disp12MaxDiff != other.Disp12MaxDiff ||
+                configuration.MinDisparity != other.MinDisparity ||
+                configuration.NumDisparities != other.NumDisparities ||
+                configuration.SpeckleRange != other.SpeckleRange ||
+                configuration.SpeckleWindowSize != other.SpeckleWindowSize)
+            {
+                return false;
+            }
+            if (configuration is Native.StereoBmConfiguration)
+            {
+                var otherStereoBmConfiguration = other as Native.StereoBmConfiguration;
+                 
+            }
+            else if (configuration is Native.StereoSgbmConfiguration)
+            {
+                var otherStereoSgbmConfiguration = other as Native.StereoSgbmConfiguration;
+            }
+            return true;
+        }
     }
 }

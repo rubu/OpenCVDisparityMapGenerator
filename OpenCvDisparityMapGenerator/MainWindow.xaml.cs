@@ -21,70 +21,97 @@ namespace OpenCvDisparityMapGenerator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private String left_image_;
-        private String right_image_;
-        private Native.OpenCvDisparityMapGenerator disparity_map_generator_;
-        private Native.StereoMatcherConfiguration stereo_matcher_configuration_;
+        private String leftImage_;
+        private String rightImage_;
+        private Native.OpenCvDisparityMapGenerator disparityMapGenerator_;
+        private Native.StereoMatcherConfiguration stereoMatcherConfiguration_;
+        private Native.OpenCvDisparityMapGeneratorType[] disparityMapGeneratorTypes_;
 
         public MainWindow()
         {
             InitializeComponent();
-            var disparity_map_generator_types = Enum.GetValues(typeof(Native.OpenCvDisparityMapGeneratorType));
-            DisparityMapGeneratorType.ItemsSource = disparity_map_generator_types;
-            DisparityMapGeneratorType.SelectedIndex = 0;
-            disparity_map_generator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).Build();
+            disparityMapGeneratorTypes_ = (Native.OpenCvDisparityMapGeneratorType[])Enum.GetValues(typeof(Native.OpenCvDisparityMapGeneratorType));
+            var disparityMapGeneratorTypeName = ApplicationSettings.Default.DisparityMapGeneratorType;
+            DisparityMapGeneratorType.ItemsSource = disparityMapGeneratorTypes_;
+            if (String.IsNullOrEmpty(disparityMapGeneratorTypeName) == false)
+            {
+                var selectedIndex = Array.FindIndex(disparityMapGeneratorTypes_, (type) => type.ToString() == disparityMapGeneratorTypeName);
+                if (selectedIndex != -1)
+                {
+                    DisparityMapGeneratorType.SelectedIndex = selectedIndex;
+                }
+                else
+                {
+                    DisparityMapGeneratorType.SelectedIndex = 0;
+                    ApplicationSettings.Default.DisparityMapGeneratorType = disparityMapGeneratorTypes_[0].ToString();
+                    ApplicationSettings.Default.Save();
+                }
+            }
+            disparityMapGenerator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).SetType(disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex]).Build();
             LoadNativeConfiguration();
             if (String.IsNullOrEmpty(ApplicationSettings.Default.LeftImage) == false)
             {
-                LoadImage(ref left_image_, ApplicationSettings.Default.LeftImage, LeftImage, LeftImagePreview);
-                disparity_map_generator_.SetLeftImage(left_image_);
+                try
+                {
+                    LoadImage(ref leftImage_, ApplicationSettings.Default.LeftImage, LeftImage, LeftImagePreview);
+                    disparityMapGenerator_.SetLeftImage(leftImage_);
+                }
+                catch (Exception exception)
+                {
+                }
             }
             if (String.IsNullOrEmpty(ApplicationSettings.Default.RightImage) == false)
             {
-                LoadImage(ref right_image_, ApplicationSettings.Default.RightImage, RightImage, RightImagePreview);
-                disparity_map_generator_.SetRightImage(right_image_);
+                try
+                {
+                    LoadImage(ref rightImage_, ApplicationSettings.Default.RightImage, RightImage, RightImagePreview);
+                    disparityMapGenerator_.SetRightImage(rightImage_);
+                }
+                catch (Exception exception)
+                {
+                }
             }
         }
 
         private void OnSelectLeftImageClicked(object sender, RoutedEventArgs e)
         {
-            if (LoadImage(ref left_image_, LeftImage, LeftImagePreview))
+            if (LoadImage(ref leftImage_, LeftImage, LeftImagePreview))
             {
-                disparity_map_generator_.SetLeftImage(left_image_);
-                ApplicationSettings.Default.LeftImage = left_image_;
+                disparityMapGenerator_.SetLeftImage(leftImage_);
+                ApplicationSettings.Default.LeftImage = leftImage_;
                 ApplicationSettings.Default.Save();
             }
         }
 
         private void OnSelectRightImageClicked(object sender, RoutedEventArgs e)
         {
-            if (LoadImage(ref right_image_, RightImage, RightImagePreview))
+            if (LoadImage(ref rightImage_, RightImage, RightImagePreview))
             {
-                disparity_map_generator_.SetRightImage(right_image_);
-                ApplicationSettings.Default.RightImage = right_image_;
+                disparityMapGenerator_.SetRightImage(rightImage_);
+                ApplicationSettings.Default.RightImage = rightImage_;
                 ApplicationSettings.Default.Save();
             }
         }
 
-        private void LoadImage(ref string existing_image, string new_image, TextBox image, Image image_container)
+        private void LoadImage(ref string existingImage, string newImage, TextBox image, Image imageContainer)
         {
-            var image_source = new BitmapImage(new Uri(new_image));
-            image_container.Source = image_source;
-            image.Text = new_image;
-            existing_image = new_image;
+            var imageSource = new BitmapImage(new Uri(newImage));
+            imageContainer.Source = imageSource;
+            image.Text = newImage;
+            existingImage = newImage;
         }
 
-        private bool LoadImage(ref string existing_image, TextBox image, Image image_container)
+        private bool LoadImage(ref string existingImage, TextBox image, Image imageContainer)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             if (dialog.ShowDialog() == true)
             {
-                var new_image = dialog.FileName;
-                if (existing_image != new_image)
+                var newImage = dialog.FileName;
+                if (existingImage != newImage)
                 {
                     try
                     {
-                        LoadImage(ref existing_image, new_image, image, image_container);
+                        LoadImage(ref existingImage, newImage, image, imageContainer);
                         return true;
                     }
                     catch (Exception exception)
@@ -98,11 +125,11 @@ namespace OpenCvDisparityMapGenerator
 
         private void OnComputeDisparityMapClicked(object sender, RoutedEventArgs e)
         {
-            if (disparity_map_generator_ != null)
+            if (disparityMapGenerator_ != null)
             {
                 try
                 {
-                    if (StereoMatcherConfiguration.Dirty)
+                    if (StereoMatcherConfiguration.IsDirty())
                     {
                         if (MessageBox.Show("Configuration has been changed since the last time it was loaded, do you want to apply the new settings?", "Configuration Changed", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
@@ -110,7 +137,7 @@ namespace OpenCvDisparityMapGenerator
                         }
                     }
                     // Yes yes, we block the gui here, boo hoo
-                    disparity_map_generator_.ComputeDisparityMap();
+                    disparityMapGenerator_.ComputeDisparityMap();
                     var source = new BitmapImage();
                     MemoryStream ms = new MemoryStream();
                     byte[] byteArray = File.ReadAllBytes(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "result.png"));
@@ -130,23 +157,32 @@ namespace OpenCvDisparityMapGenerator
 
         private void SelectedAlgorithmChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (StereoMatcherConfiguration.GuiConfiguration == null)
+            {
+                return;
+            }
+            if (disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex] != StereoMatcherConfiguration.GuiConfiguration.Type)
+            {
+                disparityMapGenerator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).SetType(disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex]).Build();
+                LoadNativeConfiguration();
+                ApplicationSettings.Default.DisparityMapGeneratorType = disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex].ToString();
+                ApplicationSettings.Default.Save();
+            }
         }
 
         private void LoadNativeConfiguration()
         {
-            stereo_matcher_configuration_ = disparity_map_generator_.GetConfiguration();
-            StereoMatcherConfiguration.NativeConfiguration = stereo_matcher_configuration_;
-            StereoMatcherConfiguration.GuiConfiguration = stereo_matcher_configuration_.Clone();
+            stereoMatcherConfiguration_ = disparityMapGenerator_.GetConfiguration();
+            StereoMatcherConfiguration.NativeConfiguration = stereoMatcherConfiguration_;
+            StereoMatcherConfiguration.GuiConfiguration = stereoMatcherConfiguration_.Clone();
             StereoMatcherConfiguration.DataContext = StereoMatcherConfiguration.GuiConfiguration;
-            StereoMatcherConfiguration.Dirty = false;
         }
 
         private void SetNativeConfiguration()
         {
             try
             {
-                disparity_map_generator_.SetConfiguration(StereoMatcherConfiguration.GuiConfiguration);
+                disparityMapGenerator_.SetConfiguration(StereoMatcherConfiguration.GuiConfiguration);
                 LoadNativeConfiguration();
             }
             catch (Exception exception)

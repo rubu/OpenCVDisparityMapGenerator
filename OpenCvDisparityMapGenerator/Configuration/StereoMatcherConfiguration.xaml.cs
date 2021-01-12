@@ -20,7 +20,12 @@ namespace OpenCvDisparityMapGenerator.Configuration
     /// </summary>
     public partial class StereoMatcherConfiguration : UserControl
     {
-        public bool Dirty { get; set; } = false;
+        public bool IsDirty()
+        {
+            return NativeConfiguration != null &&
+                GuiConfiguration != null &&
+                NativeConfiguration.IsEqual(GuiConfiguration) == false;
+        }
         public Native.StereoMatcherConfiguration NativeConfiguration { get; set; }
         public Native.StereoMatcherConfiguration GuiConfiguration { get; set; }
         public StereoMatcherConfiguration()
@@ -28,31 +33,5 @@ namespace OpenCvDisparityMapGenerator.Configuration
             InitializeComponent();
         }
 
-        private void AnyValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            var senderName = ((Control)sender).Name;
-            if (String.IsNullOrEmpty(senderName))
-            {
-                throw new ApplicationException("value without a name binding has been changed in stereo matcher configuration");
-            }
-            if (GuiConfiguration != null && NativeConfiguration != null)
-            {
-                var nativeProperty = NativeConfiguration.GetType().GetProperty(senderName);
-                var guiProperty = GuiConfiguration.GetType().GetProperty(senderName);
-                if (nativeProperty == null || guiProperty == null)
-                {
-                    throw new ApplicationException("unkown value has been changed in stereo matcher configuration");
-                }
-                if (Dirty == false)
-                {
-                    var nativeValue = nativeProperty.GetValue(NativeConfiguration, null);
-                    var guiValue = guiProperty.GetValue(GuiConfiguration, null);
-                    if (nativeValue.Equals(guiValue) == false)
-                    {
-                        Dirty = true;
-                    }
-                }
-            }
-        }
     }
 }

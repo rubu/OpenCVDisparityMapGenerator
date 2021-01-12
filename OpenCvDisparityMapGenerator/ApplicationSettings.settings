@@ -1,11 +1,14 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OpenCvDisparityMapGenerator" GeneratedClassName="Application">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OpenCvDisparityMapGenerator" GeneratedClassName="ApplicationSettings">
   <Profiles />
   <Settings>
     <Setting Name="LeftImage" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="RightImage" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DisparityMapGeneratorType" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

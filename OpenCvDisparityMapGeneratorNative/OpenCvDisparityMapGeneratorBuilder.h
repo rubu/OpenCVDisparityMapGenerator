@@ -25,18 +25,23 @@ public:
 		}
 	}
 
-	void SetUsePreProcesssing(bool use_pre_processing)
+	OpenCvDisparityMapGeneratorBuilder ^SetUsePreProcesssing(bool use_pre_processing)
 	{
 		use_pre_processing_ = use_pre_processing;
+		return this;
 	}
-	void SetType(OpenCvDisparityMapGeneratorType type)
+
+	OpenCvDisparityMapGeneratorBuilder ^SetType(OpenCvDisparityMapGeneratorType type)
 	{
 		type_ = type;
+		return this;
 	}
+
 	bool UsePreProcessing()
 	{
 		return use_pre_processing_;
 	}
+
 	OpenCvDisparityMapGeneratorType Type()
 	{
 		return type_;

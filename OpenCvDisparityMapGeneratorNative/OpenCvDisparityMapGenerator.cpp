@@ -30,6 +30,7 @@ public:
 		DisparityMap disparity_map;
 		stereo_matcher_->compute(left_image_data_, right_image_data_, disparity_map.result_);
 		cv::normalize(disparity_map.result_, disparity_map.result_normalized_, 0, 255, cv::NORM_MINMAX, CV_8U);
+		cv::imwrite("result_original.png", disparity_map.result_);
 		cv::imwrite("result.png", disparity_map.result_normalized_);
 	}
 
