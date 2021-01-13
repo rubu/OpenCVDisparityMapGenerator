@@ -13,11 +13,6 @@ namespace Native
 
 class OpenCvDisparityMapGeneratorImpl
 {
-	struct DisparityMap
-	{
-		cv::Mat result_;
-		cv::Mat result_normalized_;
-	};
 
 public:
 	OpenCvDisparityMapGeneratorImpl(OpenCvDisparityMapGeneratorType type, cv::Ptr<cv::StereoMatcher> stereo_matcher) : type_(type),
@@ -25,13 +20,22 @@ public:
 	{
 	}
 
-	void ComputeDisparityMap()
+	DisparityMapCalculationResult ^ComputeDisparityMap()
 	{
-		DisparityMap disparity_map;
-		stereo_matcher_->compute(left_image_data_, right_image_data_, disparity_map.result_);
-		cv::normalize(disparity_map.result_, disparity_map.result_normalized_, 0, 255, cv::NORM_MINMAX, CV_8U);
-		cv::imwrite("result_original.png", disparity_map.result_);
-		cv::imwrite("result.png", disparity_map.result_normalized_);
+		cv::Mat disparity_map, disparity_map_normalized;
+		stereo_matcher_->compute(left_image_data_, right_image_data_, disparity_map);
+		cv::normalize(disparity_map, disparity_map_normalized, 0, 255, cv::NORM_MINMAX, CV_8U);
+		std::vector<uchar> disparity_map_png, disparity_map_normalized_png;
+		cv::imencode(".png", disparity_map, disparity_map_png);
+		cv::imencode(".png", disparity_map_normalized, disparity_map_normalized_png);
+		DisparityMapCalculationResult ^result = gcnew DisparityMapCalculationResult;
+		result->ResultPng = gcnew array<System::Byte>(disparity_map_png.size());
+		cli::pin_ptr<unsigned char> result_png_managed = &result->ResultPng[result->ResultPng->GetLowerBound(0)];
+		memcpy(result_png_managed, disparity_map_png.data(), disparity_map_png.size());
+		result->ResultNormalizedPng = gcnew array<System::Byte>(disparity_map_normalized_png.size());
+		cli::pin_ptr<unsigned char> result_normalized_png_managed = &result->ResultNormalizedPng[result->ResultNormalizedPng->GetLowerBound(0)];
+		memcpy(result_normalized_png_managed, disparity_map_normalized_png.data(), disparity_map_normalized_png.size());
+		return result;
 	}
 
 	StereoMatcherConfiguration ^GetConfiguration()
@@ -125,11 +129,11 @@ OpenCvDisparityMapGenerator::~OpenCvDisparityMapGenerator()
 	delete impl_;
 }
 
-void OpenCvDisparityMapGenerator::ComputeDisparityMap()
+DisparityMapCalculationResult ^OpenCvDisparityMapGenerator::ComputeDisparityMap()
 {
 	try
 	{
-		impl_->ComputeDisparityMap();
+		return impl_->ComputeDisparityMap();
 	}
 	catch (const cv::Exception &exception)
 	{

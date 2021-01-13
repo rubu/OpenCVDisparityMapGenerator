@@ -2,6 +2,7 @@
 
 #include "OpenCvDisparityMapGeneratorType.h"
 #include "StereoMatcherConfiguration.h"
+#include "DisparityMapCalculationResult.h"
 
 namespace Native
 {
@@ -15,7 +16,7 @@ public:
 	~OpenCvDisparityMapGenerator();
 	!OpenCvDisparityMapGenerator();
 
-	void ComputeDisparityMap();
+	DisparityMapCalculationResult ^ComputeDisparityMap();
 	StereoMatcherConfiguration ^GetConfiguration();
 	void SetConfiguration(StereoMatcherConfiguration ^configuration);
 	void SetLeftImage(System::String ^left_image);

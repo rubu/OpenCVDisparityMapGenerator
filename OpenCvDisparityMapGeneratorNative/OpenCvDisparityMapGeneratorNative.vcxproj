@@ -189,6 +189,7 @@ copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgproc451d.dll $(O
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DisparityMapCalculationResult.h" />
     <ClInclude Include="OpenCvDisparityMapGeneratorType.h" />
     <ClInclude Include="OpenCvDisparityMapGeneratorBuilder.h" />
     <ClInclude Include="OpenCvDisparityMapGenerator.h" />
