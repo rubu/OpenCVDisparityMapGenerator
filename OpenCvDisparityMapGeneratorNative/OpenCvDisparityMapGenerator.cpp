@@ -5,11 +5,22 @@
 #include <msclr\marshal_cppstd.h>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/ximgproc.hpp>
 #include <memory>
 #include <sstream>
 
 namespace Native
 {
+
+static array<System::Byte> ^EncodeImageAsPng(const cv::Mat &image)
+{
+	std::vector<uchar> png_bytes;
+	cv::imencode(".png", image, png_bytes);
+	array<System::Byte> ^result = gcnew array<System::Byte>(png_bytes.size());
+	cli::pin_ptr<unsigned char> result_ptr = &result[result->GetLowerBound(0)];
+	memcpy(result_ptr, png_bytes.data(), png_bytes.size());
+	return result;
+}
 
 class OpenCvDisparityMapGeneratorImpl
 {
@@ -25,16 +36,23 @@ public:
 		cv::Mat disparity_map, disparity_map_normalized;
 		stereo_matcher_->compute(left_image_data_, right_image_data_, disparity_map);
 		cv::normalize(disparity_map, disparity_map_normalized, 0, 255, cv::NORM_MINMAX, CV_8U);
-		std::vector<uchar> disparity_map_png, disparity_map_normalized_png;
-		cv::imencode(".png", disparity_map, disparity_map_png);
-		cv::imencode(".png", disparity_map_normalized, disparity_map_normalized_png);
 		DisparityMapCalculationResult ^result = gcnew DisparityMapCalculationResult;
-		result->ResultPng = gcnew array<System::Byte>(disparity_map_png.size());
-		cli::pin_ptr<unsigned char> result_png_managed = &result->ResultPng[result->ResultPng->GetLowerBound(0)];
-		memcpy(result_png_managed, disparity_map_png.data(), disparity_map_png.size());
-		result->ResultNormalizedPng = gcnew array<System::Byte>(disparity_map_normalized_png.size());
-		cli::pin_ptr<unsigned char> result_normalized_png_managed = &result->ResultNormalizedPng[result->ResultNormalizedPng->GetLowerBound(0)];
-		memcpy(result_normalized_png_managed, disparity_map_normalized_png.data(), disparity_map_normalized_png.size());
+		result->ResultPng = EncodeImageAsPng(disparity_map);
+		result->ResultNormalizedPng = EncodeImageAsPng(disparity_map_normalized);
+		/*
+			confidence map stuff from 
+			https://github.com/opencv/opencv_contrib/blob/master/modules/ximgproc/samples/disparity_filtering.cpp
+		*/
+		const double lambda = 8000, sigma = 1.5; // defaults from the sample
+		auto right_matcher = cv::ximgproc::createRightMatcher(stereo_matcher_);
+		auto wls_filter = cv::ximgproc::createDisparityWLSFilter(stereo_matcher_);
+		wls_filter->setLambda(lambda);
+		wls_filter->setSigmaColor(sigma);
+		cv::Mat right_disparity_map, filtered_disparity_map;
+		right_matcher->compute(right_image_data_, left_image_data_, right_disparity_map);
+		wls_filter->filter(disparity_map, left_image_data_, filtered_disparity_map, right_disparity_map);
+		auto confidence_map = wls_filter->getConfidenceMap();
+		result->ConfidenceMapPng = EncodeImageAsPng(confidence_map);
 		return result;
 	}
 

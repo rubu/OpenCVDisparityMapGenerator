@@ -49,7 +49,15 @@
 			<Image Grid.Row="3" Grid.Column="1" x:Name="RightImagePreview"></Image>
 		</Grid>
         <Button Grid.Row="4" HorizontalAlignment="Center" Click="OnComputeDisparityMapClicked">Compute Disparity Map</Button>
-		<Image Grid.Row="5" HorizontalAlignment="Center" x:Name="DisparityMap"></Image>
-		<Image Grid.Row="6" HorizontalAlignment="Center" x:Name="ConfidenceMap"></Image>
+		<StackPanel Grid.Row="5">
+			<Label HorizontalAlignment="Center">Disparity Map</Label>
+			<Image HorizontalAlignment="Center" x:Name="DisparityMap"></Image>
+		</StackPanel>
+		<StackPanel Grid.Row="6">
+			<Label HorizontalAlignment="Center">Confidence Map</Label>
+			<Image  HorizontalAlignment="Center" x:Name="ConfidenceMap"></Image>
+		</StackPanel>
+		
+
     </Grid>
 </Window>

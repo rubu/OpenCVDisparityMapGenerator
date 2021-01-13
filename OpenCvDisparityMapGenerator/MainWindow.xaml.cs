@@ -101,6 +101,17 @@ namespace OpenCvDisparityMapGenerator
             existingImage = newImage;
         }
 
+        private static BitmapSource BitmapSourceFromPngBytes(byte[] pngBytes)
+        {
+            var source = new BitmapImage();
+            MemoryStream ms = new MemoryStream();
+            ms.Write(pngBytes, 0, pngBytes.Length);
+            ms.Position = 0;
+            source.BeginInit();
+            source.StreamSource = ms;
+            source.EndInit();
+            return source;
+        }
         private bool LoadImage(ref string existingImage, TextBox image, Image imageContainer)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -138,14 +149,11 @@ namespace OpenCvDisparityMapGenerator
                     }
                     // Yes yes, we block the gui here, boo hoo
                     var result = disparityMapGenerator_.ComputeDisparityMap();
-                    var source = new BitmapImage();
-                    MemoryStream ms = new MemoryStream();
-                    ms.Write(result.ResultNormalizedPng, 0, result.ResultNormalizedPng.Length);
-                    ms.Position = 0;
-                    source.BeginInit();
-                    source.StreamSource = ms;
-                    source.EndInit();
-                    DisparityMap.Source = source;
+                    File.WriteAllBytes("result.png", result.ResultPng);
+                    File.WriteAllBytes("result_normalized.png", result.ResultNormalizedPng);
+                    File.WriteAllBytes("confidence_map.png", result.ConfidenceMapPng);
+                    DisparityMap.Source = BitmapSourceFromPngBytes(result.ResultNormalizedPng);
+                    ConfidenceMap.Source = BitmapSourceFromPngBytes(result.ConfidenceMapPng);
                 }
                 catch (Exception exception)
                 {
