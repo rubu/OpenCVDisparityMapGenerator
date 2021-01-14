@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.IO;
+using System.Diagnostics;
 
 namespace OpenCvDisparityMapGenerator
 {
@@ -29,6 +30,10 @@ namespace OpenCvDisparityMapGenerator
 
         public MainWindow()
         {
+            if (Debugger.IsAttached)
+            {
+                ApplicationSettings.Default.Reset();
+            }
             InitializeComponent();
             disparityMapGeneratorTypes_ = (Native.OpenCvDisparityMapGeneratorType[])Enum.GetValues(typeof(Native.OpenCvDisparityMapGeneratorType));
             var disparityMapGeneratorTypeName = ApplicationSettings.Default.DisparityMapGeneratorType;
@@ -40,12 +45,12 @@ namespace OpenCvDisparityMapGenerator
                 {
                     DisparityMapGeneratorType.SelectedIndex = selectedIndex;
                 }
-                else
-                {
-                    DisparityMapGeneratorType.SelectedIndex = 0;
-                    ApplicationSettings.Default.DisparityMapGeneratorType = disparityMapGeneratorTypes_[0].ToString();
-                    ApplicationSettings.Default.Save();
-                }
+            }
+            if (DisparityMapGeneratorType.SelectedIndex == -1)
+            {
+                DisparityMapGeneratorType.SelectedIndex = 0;
+                ApplicationSettings.Default.DisparityMapGeneratorType = disparityMapGeneratorTypes_[0].ToString();
+                ApplicationSettings.Default.Save();
             }
             disparityMapGenerator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).SetType(disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex]).Build();
             LoadNativeConfiguration();
@@ -150,6 +155,7 @@ namespace OpenCvDisparityMapGenerator
                     // Yes yes, we block the gui here, boo hoo
                     var result = disparityMapGenerator_.ComputeDisparityMap();
                     File.WriteAllBytes("result.png", result.ResultPng);
+                    File.WriteAllBytes("result_filtered.png", result.ResultFilteredPng);
                     File.WriteAllBytes("result_normalized.png", result.ResultNormalizedPng);
                     File.WriteAllBytes("confidence_map.png", result.ConfidenceMapPng);
                     DisparityMap.Source = BitmapSourceFromPngBytes(result.ResultNormalizedPng);
@@ -171,6 +177,14 @@ namespace OpenCvDisparityMapGenerator
             if (disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex] != StereoMatcherConfiguration.GuiConfiguration.Type)
             {
                 disparityMapGenerator_ = (new Native.OpenCvDisparityMapGeneratorBuilder()).SetType(disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex]).Build();
+                if (String.IsNullOrEmpty(leftImage_) == false)
+                {
+                    disparityMapGenerator_.SetLeftImage(leftImage_);
+                }
+                if (String.IsNullOrEmpty(rightImage_) == false)
+                {
+                    disparityMapGenerator_.SetRightImage(rightImage_);
+                }
                 LoadNativeConfiguration();
                 ApplicationSettings.Default.DisparityMapGeneratorType = disparityMapGeneratorTypes_[DisparityMapGeneratorType.SelectedIndex].ToString();
                 ApplicationSettings.Default.Save();

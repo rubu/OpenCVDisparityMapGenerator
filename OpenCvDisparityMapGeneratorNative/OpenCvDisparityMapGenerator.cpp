@@ -53,6 +53,7 @@ public:
 		wls_filter->filter(disparity_map, left_image_data_, filtered_disparity_map, right_disparity_map);
 		auto confidence_map = wls_filter->getConfidenceMap();
 		result->ConfidenceMapPng = EncodeImageAsPng(confidence_map);
+		result->ResultFilteredPng = EncodeImageAsPng(filtered_disparity_map);
 		return result;
 	}
 
@@ -81,7 +82,7 @@ public:
 			configuration->BlockSize = stereo_matcher_->getBlockSize();
 			configuration->SpeckleRange = stereo_matcher_->getSpeckleRange();
 			configuration->SpeckleWindowSize = stereo_matcher_->getSpeckleWindowSize();
-			configuration->Disp12MaxDiff = stereo_matcher_->getSpeckleWindowSize();
+			configuration->Disp12MaxDiff = stereo_matcher_->getDisp12MaxDiff();
 		}
 		return configuration;
 	}
@@ -112,13 +113,21 @@ public:
 		SetImage(right_image, right_image_, right_image_data_);
 	}
 
+#define DENOISE
+
 private:
 	void SetImage(const std::string &new_image, std::string &existing_image, cv::Mat &image_data)
 	{
 		if (new_image != existing_image)
 		{
 			auto image_data_original = cv::imread(new_image);
+#if defined(DENOISE)
+			cv::Mat image_before_denoising;
+			cv::cvtColor(image_data_original, image_before_denoising, cv::COLOR_BGR2GRAY);
+			cv::fastNlMeansDenoising(image_before_denoising, image_data);
+#else
 			cv::cvtColor(image_data_original, image_data, cv::COLOR_BGR2GRAY);
+#endif
 			existing_image = new_image;
 		}
 	}
@@ -173,6 +182,16 @@ void OpenCvDisparityMapGenerator::CreateImpl(OpenCvDisparityMapGeneratorType typ
 		throw gcnew System::Exception(System::String::Format("unsupported OpenCV disparity map generator type {0}", gcnew System::UInt32(static_cast<unsigned int>(type))));
 	}
 	type_ = type;
+	if (left_image_ != nullptr)
+	{
+		auto image = left_image_;
+		impl_->SetLeftImage(msclr::interop::marshal_as<std::string>(image));
+	}
+	if (right_image_ != nullptr)
+	{
+		auto image = right_image_;
+		impl_->SetLeftImage(msclr::interop::marshal_as<std::string>(image));
+	}
 }
 
 StereoMatcherConfiguration ^OpenCvDisparityMapGenerator::GetConfiguration()
@@ -189,16 +208,16 @@ void OpenCvDisparityMapGenerator::SetConfiguration(StereoMatcherConfiguration ^c
 	impl_->SetConfiguration(configuration);
 }
 
-void OpenCvDisparityMapGenerator::SetLeftImage(System::String^ left_image)
+void OpenCvDisparityMapGenerator::SetLeftImage(System::String ^left_image)
 {
 	impl_->SetLeftImage(msclr::interop::marshal_as<std::string>(left_image));
 	left_image_ = left_image;
 }
 
-void OpenCvDisparityMapGenerator::SetRightImage(System::String^ right_image)
+void OpenCvDisparityMapGenerator::SetRightImage(System::String ^right_image)
 {
 	impl_->SetRightImage(msclr::interop::marshal_as<std::string>(right_image));
-	right_image_ = right_image_;
+	right_image_ = right_image;
 }
 
 }

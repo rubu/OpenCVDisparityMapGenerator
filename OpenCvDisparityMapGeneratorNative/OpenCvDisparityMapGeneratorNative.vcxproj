@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -26,19 +18,6 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -57,12 +36,6 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -70,16 +43,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Development\opencv-build\install\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Development\opencv-build\install\x64\vc16\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Development\opencv-build\install\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Development\opencv-build\install\x64\vc16\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>D:\Development\opencv-build\install\include;$(IncludePath)</IncludePath>
@@ -90,58 +53,6 @@
     <IncludePath>D:\Development\opencv-build\install\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Development\opencv-build\install\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <SupportJustMyCode>false</SupportJustMyCode>
-      <CompileAsManaged>true</CompileAsManaged>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_calib3d451d.lib;opencv_core451d.lib;opencv_imgcodecs451d.lib;opencv_objdetect451d.lib;opencv_stitching451d.lib;opencv_imgproc451d.lib;opencv_ximgproc451d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AssemblyDebug>true</AssemblyDebug>
-    </Link>
-    <PostBuildEvent>
-      <Command>echo "Copying OpenCV binaries to $(OutputPath)"
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_core451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_calib3d451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_stitching451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_objdetect451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_dnn451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_features2d451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_flann451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgcodecs451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgproc451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_ximgproc451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451d.dll $(OutputPath)</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <CompileAsManaged>true</CompileAsManaged>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -157,7 +68,7 @@ copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451d.dll $(Out
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_calib3d451d.lib;opencv_core451d.lib;opencv_imgcodecs451d.lib;opencv_objdetect451d.lib;opencv_stitching451d.lib;opencv_imgproc451d.lib;opencv_ximgproc451d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_calib3d451d.lib;opencv_core451d.lib;opencv_imgcodecs451d.lib;opencv_objdetect451d.lib;opencv_stitching451d.lib;opencv_imgproc451d.lib;opencv_ximgproc451d.lib;opencv_photo451d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
@@ -172,7 +83,8 @@ copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_flann451d.dll $(Out
 copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgcodecs451d.dll $(OutputPath)
 copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgproc451d.dll $(OutputPath)
 copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_ximgproc451d.dll $(OutputPath)
-copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451d.dll $(OutputPath)</Command>
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451d.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_photo451d.dll $(OutputPath)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -192,7 +104,23 @@ copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451d.dll $(Out
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalDependencies>opencv_calib3d451.lib;opencv_core451.lib;opencv_imgcodecs451.lib;opencv_objdetect451.lib;opencv_stitching451.lib;opencv_imgproc451.lib;opencv_ximgproc451.lib;opencv_photo451.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>echo "Copying OpenCV binaries to $(OutputPath)"
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_core451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_calib3d451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_stitching451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_objdetect451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_dnn451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_features2d451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_flann451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgcodecs451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_imgproc451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_ximgproc451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451.dll $(OutputPath)
+copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_photo451.dll $(OutputPath)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DisparityMapCalculationResult.h" />
@@ -205,14 +133,10 @@ copy D:\Development\opencv-build\install\x64\vc16\bin\opencv_video451d.dll $(Out
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCvDisparityMapGenerator.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</CompileAsManaged>
     </ClCompile>
     <ClCompile Include="OpenCvDisparityMapGeneratorBuilder.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</CompileAsManaged>
     </ClCompile>

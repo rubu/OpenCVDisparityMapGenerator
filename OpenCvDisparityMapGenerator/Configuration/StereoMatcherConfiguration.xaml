@@ -44,6 +44,6 @@
         <!-- Disp12MaxDiff-->
         <Label Grid.Row="5" VerticalAlignment="Center">Maximum allowed difference</Label>
         <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=Disp12MaxDiff, Path=Value, StringFormat={}{0:f0}}"/>
-        <Slider x:Name="Disp12MaxDiff" Grid.Row="5" Grid.Column="2"  VerticalAlignment="Center" Value="{Binding Path=Disp12MaxDiff}" Minimum="0" Maximum="1000"></Slider>
+        <Slider x:Name="Disp12MaxDiff" Grid.Row="5" Grid.Column="2"  VerticalAlignment="Center" Value="{Binding Path=Disp12MaxDiff}" Minimum="-1" Maximum="1000"></Slider>
     </Grid>
 </UserControl>
